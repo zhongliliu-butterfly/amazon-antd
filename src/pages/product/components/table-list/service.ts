@@ -8,3 +8,14 @@ export async function queryFakeList(
     params,
   });
 }
+
+export async function queryProductList(
+  params: Params,
+): Promise<{ data: { list: ListItemDataType[] } }> {
+  return request('/api', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
