@@ -4,8 +4,10 @@ import type { TableProps } from 'antd';
 import { Button, Card, Flex, Form, Select, Space, Table } from 'antd';
 import { type FC } from 'react';
 import dogs from '../../../../../public/dogs.jpg';
+import type { Action } from '../../data';
 import StandardFormRow from './components/StandardFormRow';
 import TagSelect from './components/TagSelect';
+import { queryProductList } from './service';
 import {
   addition_strategy,
   budget_adjustment,
@@ -19,10 +21,10 @@ import {
 const FormItem = Form.Item;
 
 type TableListProps = {
-  clickEdit: (key: string) => void;
+  clickEditAction: (action: Action) => void;
 };
 
-const TableList: FC<TableListProps> = ({ clickEdit }) => {
+const TableList: FC<TableListProps> = ({ clickEditAction }) => {
   interface DataType {
     key: React.Key;
     title: string;
@@ -36,8 +38,14 @@ const TableList: FC<TableListProps> = ({ clickEdit }) => {
       title: '策略ID',
       dataIndex: 'clid',
       key: 'clid',
-      render: () => (
-        <Flex vertical gap={6}>
+      render: (_, data) => (
+        <Flex
+          vertical
+          gap={6}
+          onClick={() => {
+            clickEditAction({ action: 'action1', data: data });
+          }}
+        >
           <Space align="center">
             <img src={dogs} style={{ height: '60px', width: '60px' }}></img>
             <Flex vertical>
@@ -93,7 +101,7 @@ const TableList: FC<TableListProps> = ({ clickEdit }) => {
         <a
           onClick={() => {
             console.log(data);
-            clickEdit(data.key);
+            clickEditAction({ action: 'action2', data: data });
           }}
         >
           编辑
@@ -128,6 +136,10 @@ const TableList: FC<TableListProps> = ({ clickEdit }) => {
       edit: '编辑',
     },
   ];
+
+  const searchData = () => {
+    queryProductList({ count: 111 });
+  };
   // const { styles } = useStyles();
   return (
     <GridContent>
@@ -142,7 +154,7 @@ const TableList: FC<TableListProps> = ({ clickEdit }) => {
           <StandardFormRow block style={{ paddingBottom: 0 }}>
             <FormItem name="search">
               <Flex gap={6} align="center" justify="center">
-                <Button type="primary" icon={<SearchOutlined />}>
+                <Button type="primary" icon={<SearchOutlined />} onClick={searchData}>
                   Search
                 </Button>
                 <Select defaultValue="全部" style={{ width: '40%' }} options={search_options} />
